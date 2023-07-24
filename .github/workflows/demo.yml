@@ -34,7 +34,7 @@ jobs:
         #presmerovanim >> do $GITHUB_OUTPUT sa ulozi do vzstupu
         #id umozni pristup v dalsich joboch, inac by bolo pristupne len v tomto
         id: publish
-        run: find dist/assets/*.js -type f -execdir echo 'jsfile={}' >> $GITHUB_OUTPUT';'
+        run: find dist/assets/*.js -type f -execdir echo 'jsfile={}' >> $GITHUB_OUTPUT ';'
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
