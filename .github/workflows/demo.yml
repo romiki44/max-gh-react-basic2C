@@ -18,6 +18,9 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    #treba zadefinovat output, ak chceme aby bol vysledok dalej k dispozicii
+    outputs:
+      script-file: ${{ steps.publish.outputs.jsfile }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -25,6 +28,13 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Publish JS filename
+        #vrati nazov javascriptoveho suboru (do konzoly napr.)
+        #run: find dist/assets/*.js -type f -execdir echo '{}' ';'
+        #presmerovanim >> do $GITHUB_OUTPUT sa ulozi do vzstupu
+        #id umozni pristup v dalsich joboch, inac by bolo pristupne len v tomto
+        id: publish
+        run: find dist/assets/*.js -type f -execdir echo 'jsfile={}' >> $GITHUB_OUTPUT';'
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -43,5 +53,8 @@ jobs:
           name: dist-files
       - name: Output contents
         run: ls
+      - name: Output filename
+        #pouzijem nazov suboru z build-jobu a vytlacime ho do konzoly napr.
+        run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
         run: echo "Deploying..."
